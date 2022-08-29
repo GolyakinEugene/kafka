@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.suncj.demo.models.Message;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class ProducerController {
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
 
+	@ApiOperation(value = "Отправить данные в топик kafka", notes = "Отправить данные в топик Kafka")
+	@ApiImplicitParam(name = "message", value = "Сообщение в топик", required = true, dataType = "Message")
 	@PostMapping (value = "write/data", produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object sendKafka(@RequestBody Message message, HttpServletRequest request) {
 		String ipAddress =  request.getRemoteAddr();

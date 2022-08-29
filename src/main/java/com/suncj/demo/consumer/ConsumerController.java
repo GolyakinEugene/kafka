@@ -1,6 +1,8 @@
 package com.suncj.demo.consumer;
 
 import com.suncj.demo.models.DateFromKafka;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -15,6 +17,9 @@ public class ConsumerController {
 	private static Logger logger = LoggerFactory.getLogger(ConsumerController.class);
 	private ReadMessage readMessage = new ReadMessage();
 
+
+	@ApiOperation(value = "Получить данные из топика kafka", notes = "Получить последние данные из топика kafka, где count - количество последних значений")
+	@ApiImplicitParam(name = "count", value = "Количество записей", required = true, dataType = "int", paramType = "query" )
 	@GetMapping(value = "read/data", produces = MediaType.APPLICATION_JSON_VALUE)
 	public DateFromKafka sendKafka(@RequestParam("count") int count, HttpServletRequest request) {
 		String ipAddress =  request.getRemoteAddr();
