@@ -6,10 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @RestController
 public class ConsumerController {
@@ -17,11 +16,12 @@ public class ConsumerController {
 	private ReadMessage readMessage = new ReadMessage();
 
 	@GetMapping(value = "read/data", produces = MediaType.APPLICATION_JSON_VALUE)
-	public DateFromKafka sendKafka(@RequestParam("count") int count) {
+	public DateFromKafka sendKafka(@RequestParam("count") int count, HttpServletRequest request) {
+		String ipAddress =  request.getRemoteAddr();
 		DateFromKafka date = new DateFromKafka();
+		logger.info("Reading data from {} started", ipAddress);
 		try {
 			long time_get = Instant.now().getEpochSecond();
-			logger.info("Get messages");
 			date.setMessagesFromKafka(readMessage.readMessage(count));
 			long time_send = Instant.now().getEpochSecond();
 			long timeWork = time_send - time_get;
@@ -30,7 +30,7 @@ public class ConsumerController {
 			date.setTime_work(timeWork);
 			return date;
 		} catch (Exception e) {
-			logger.error("kafka", e);
+			logger.info("Reading data from {} finished with exception {}", ipAddress, e);
 			return null;
 		}
 	}
